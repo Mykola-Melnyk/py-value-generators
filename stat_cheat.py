@@ -12,7 +12,7 @@ def generate_normal_distribution():
         std_dev = float(input("Enter the standard deviation: "))
         num_values = int(input("Enter the number of values: "))
         digits = int(input("Enter the number of digits after comma: "))
-        hist = input("Do you want to create a histogram? (yes/no): ").strip().lower()
+        hist = input("Do you want to create a histogram? (y/n): ").strip().lower()
         
         while True:
             values = np.random.normal(mean, std_dev, num_values)
@@ -48,7 +48,7 @@ def generate_normal_distribution():
         print(f"Standard deviation: {np.std(values):.2f}")
         print(f"Median: {np.median(values):.2f}")
         # Generate histogram if needed
-        if hist == 'yes':
+        if hist == 'y':
             rounded_values = np.round(values)
             plt.hist(rounded_values, bins=int(upper-lower), edgecolor='black')
             plt.xlabel('Value')
