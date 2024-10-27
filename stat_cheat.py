@@ -30,17 +30,13 @@ def generate_normal_distribution():
                 print("Generated values follow a normal distribution")
                 break
             print("Generated values do not follow a normal distribution. Generating again...")
-        
-        # Format values
-        values = np.round(values, digits)
-        df = pd.DataFrame(values, columns=['Values'])
-
-        # Copy to clipboard
-        df.to_clipboard(index=False, header=False, sep=',')
 
         # Output formatted values
-        print("Formatted Values:")
-        print(df.to_csv(index=False, header=False, sep=','))
+        formatted_values = [f"{value:.{digits}f}".replace('.', ',') for value in values]
+        output = "\n".join(formatted_values)
+        pyperclip.copy(output)
+        print("\nGenerated values (copied to clipboard):")
+        print(output)
         print(f"Total number of values: {len(values)}")
         print(f"Minimum value: {min(values):.2f}")
         print(f"Maximum value: {max(values):.2f}")
