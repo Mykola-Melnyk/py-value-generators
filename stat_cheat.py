@@ -6,51 +6,60 @@ import pyperclip
 
 def generate_normal_distribution():
     try:
-        lower = float(input("Enter the lower value: "))
-        upper = float(input("Enter the upper value: "))
-        mean = float(input("Enter the mean: "))
-        std_dev = float(input("Enter the standard deviation: "))
-        num_values = int(input("Enter the number of values: "))
-        digits = int(input("Enter the number of digits after comma: "))
-        hist = input("Do you want to create a histogram? (y/n): ").strip().lower()
-        
-        while True:
+        def generate_values():
+            lower = float(input("Enter lower value: "))
+            upper = float(input("Enter upper value: "))
+            mean = float(input("Enter mean: "))
+            std_dev = float(input("Enter standard deviation: "))
+            num_values = int(input("Enter number of values: "))
+            digits_after_comma = int(input("Enter number of digits after comma: "))
+            create_hist = input("Create histogram (y/n): ").strip().lower() == 'y'
+
             values = np.random.normal(mean, std_dev, num_values)
             values = values[(values >= lower) & (values <= upper)]
-            
-            # Check number of values
-            while len(values) < num_values:
-                additional_values = np.random.normal(mean, std_dev, num_values - len(values))
-                additional_values = additional_values[(additional_values >= lower) & (additional_values <= upper)]
-                values = np.append(values, additional_values)
-            
-            # Perform Kolmogorov-Smirnov test
-            ks_stat, p_value = kstest(values, 'norm', args=(mean, std_dev))
-            if p_value >= 0.05:
-                print("Generated values follow a normal distribution")
-                break
-            print("Generated values do not follow a normal distribution. Generating again...")
 
-        # Output formatted values
-        formatted_values = [f"{value:.{digits}f}".replace('.', ',') for value in values]
-        output = "\n".join(formatted_values)
-        pyperclip.copy(output)
-        print("\nGenerated values (copied to clipboard):")
-        print(output)
-        print(f"Total number of values: {len(values)}")
-        print(f"Minimum value: {min(values):.2f}")
-        print(f"Maximum value: {max(values):.2f}")
-        print(f"Mean: {np.mean(values):.2f}")
-        print(f"Standard deviation: {np.std(values):.2f}")
-        print(f"Median: {np.median(values):.2f}")
-        # Generate histogram if needed
-        if hist == 'y':
-            rounded_values = np.round(values)
-            plt.hist(rounded_values, bins=int(upper-lower), edgecolor='black')
-            plt.xlabel('Value')
-            plt.ylabel('Frequency')
-            plt.title('Histogram of Generated Values')
-            plt.show()
+            while len(values) < num_values:
+                extra_values = np.random.normal(mean, std_dev, num_values - len(values))
+                extra_values = extra_values[(extra_values >= lower) & (extra_values <= upper)]
+                values = np.concatenate([values, extra_values])
+
+            return values[:num_values], digits_after_comma, create_hist
+
+        def check_normality(values):
+            k_stat, p_value = kstest(values, 'norm', args=(np.mean(values), np.std(values)))
+            return p_value > 0.05
+
+        def main():
+            while True:
+                values, digits_after_comma, create_hist = generate_values()
+
+                if check_normality(values):
+                    formatted_values = [f"{value:.{digits_after_comma}f}".replace('.', ',') for value in values]
+                    result = "\n".join(formatted_values)
+                    pyperclip.copy(result)
+                    print(result)
+                    print("The generated values follow a normal distribution. They have been copied to the clipboard.")
+                    print(f"Total number of values: {len(values)}")
+                    print(f"Minimum value: {min(values):.2f}")
+                    print(f"Maximum value: {max(values):.2f}")
+                    print(f"Mean: {np.mean(values):.2f}")
+                    print(f"Standard deviation: {np.std(values):.2f}")
+                    print(f"Median: {np.median(values):.2f}")
+                    if create_hist:
+                        plt.hist(np.round(values), bins='auto', edgecolor='black')
+                        plt.xlabel('Value')
+                        plt.ylabel('Frequency')
+                        plt.title('Histogram of Generated Values')
+                        plt.show()
+                    break
+                else:
+                    retry = input("The generated values do not follow a normal distribution. Do you want to try again? (y/n): ").strip().lower()
+                    if retry != 'y':
+                        break
+
+        if __name__ == "__main__":
+            main()
+
     
     except Exception as e:
         print(f"An error occurred: {e}")
