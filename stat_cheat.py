@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.stats import kstest, norm
 import pyperclip
+import random
 
 def generate_normal_distribution():
     try:
@@ -139,18 +140,64 @@ def sort_ranges():
     if __name__ == "__main__":
         main()
 
+def generate_values():
+    # Step 1: Ask for the number of values to generate
+    total_values = int(input("Enter the number of values to generate: "))
+    
+    # Step 2: Ask for the number of value types
+    num_value_types = int(input("Enter the number of value types: "))
+    
+    value_types = []
+    percentages = []
+    
+    # Step 3: Ask for the definition of each value type and their percentages
+    for i in range(num_value_types):
+        value_type = input(f"Enter the definition for value type {i+1}: ")
+        percentage = float(input(f"Enter the percentage for value type {i+1} (0-100): "))
+        value_types.append(value_type)
+        percentages.append(percentage / 100)
+    
+    # Ensure the total percentage is 100
+    if sum(percentages) != 1.0:
+        print("Error: The total percentage must equal 100.")
+        return
+    
+    # Generate the values
+    generated_values = []
+    for value_type, percentage in zip(value_types, percentages):
+        count = int(total_values * percentage)
+        generated_values.extend([value_type] * count)
+    
+    # If there are any remaining due to rounding, add them to the last value type
+    remaining = total_values - len(generated_values)
+    generated_values.extend([value_types[-1]] * remaining)
+    
+    # Shuffle the values
+    random.shuffle(generated_values)
+    
+    # Output the results
+    formatted_values = [str(value).replace('.', ',') for value in generated_values]
+    output = "\n".join(formatted_values)
+    
+    # Copy to clipboard
+    pyperclip.copy(output)
+    
+    print("Results copied to clipboard:")
+    print(output)
 
 def main():
     print("Choose a functionality to execute:")
     print("1. Generate normal distribution")
     print("2. Sort values into ranges and analyze them")
-    
-    choice = input("Enter your choice (1 or 2): ")
+    print("3. Generate custom values by their percentage")
+    choice = input("Enter your choice (1, 2 or 3): ")
     
     if choice == '1':
         generate_normal_distribution()
     elif choice == '2':
         sort_ranges()
+    elif choice == '3':
+        generate_values()    
     else:
         print("Invalid choice. Please enter 1 or 2.")
 
