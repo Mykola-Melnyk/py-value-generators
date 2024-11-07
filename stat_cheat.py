@@ -210,20 +210,20 @@ def analyze_values():
     value_counts = Counter(values)
     
     # Display the results
-    print(f"Total number of values: {num_values}")
+    print(f"Total number of values: {num_values}\n")
     for value, count in value_counts.items():
         percentage = (count / num_values) * 100
         print(f"Value: {value}, Count: {count}, Percentage: {percentage:.2f}%\n")
 
 def main():
     while True:
-        print("""Choose a functionality to execute:
-        1. Generate normal distribution
-        2. Sort values into ranges and analyze them
-        3. Generate custom values by their percentage
-        4. Analyze custom values for their count and percentage
-        0. Exit""")
-        choice = input("Enter your choice (1, 2, 3, 4 or 0): ")
+        print("""\nChoose a functionality to execute:\n
+1. Generate normal distribution
+2. Sort values into ranges and analyze them
+3. Generate custom values by their percentage
+4. Analyze custom values for their count and percentage
+0. Exit\n""")
+        choice = input("Enter your choice (1, 2, 3, 4 or 0): \n")
         
         if choice == '1':
             generate_normal_distribution()
@@ -234,10 +234,10 @@ def main():
         elif choice == '4':
             analyze_values()
         elif choice == '0':
-            print("Exiting the program. Goodbye!")
+            print("\nExiting the program. Goodbye!\n")
             break             
         else:
-            print("Invalid choice. Choose 1, 2, 3, 4 or 0")
+            print("\nInvalid choice. Choose 1, 2, 3, 4 or 0\n")
 
 if __name__ == "__main__":
     main()
