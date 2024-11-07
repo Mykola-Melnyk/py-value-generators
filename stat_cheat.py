@@ -10,7 +10,7 @@ from collections import Counter
 def generate_normal_distribution():
     try:
         def generate_values():
-            lower = float(input("Enter lower value: "))
+            lower = float(input("\nEnter lower value: "))
             upper = float(input("Enter upper value: "))
             mean = float(input("Enter mean: "))
             std_dev = float(input("Enter standard deviation: "))
@@ -41,13 +41,13 @@ def generate_normal_distribution():
                     result = "\n".join(formatted_values)
                     pyperclip.copy(result)
                     print(result)
-                    print("The generated values follow a normal distribution. They have been copied to the clipboard.")
+                    print("\nThe generated values follow a normal distribution. They have been copied to the clipboard.\n")
                     print(f"Total number of values: {len(values)}")
                     print(f"Minimum value: {min(values):.2f}")
                     print(f"Maximum value: {max(values):.2f}")
                     print(f"Mean: {np.mean(values):.2f}")
                     print(f"Standard deviation: {np.std(values):.2f}")
-                    print(f"Median: {np.median(values):.2f}")
+                    print(f"Median: {np.median(values):.2f}\n")
                     if create_hist:
                         plt.hist(np.round(values), bins='auto', edgecolor='black')
                         plt.xlabel('Value')
@@ -56,7 +56,7 @@ def generate_normal_distribution():
                         plt.show()
                     break
                 else:
-                    retry = input("The generated values do not follow a normal distribution. Do you want to try again? (y/n): ").strip().lower()
+                    retry = input("\nThe generated values do not follow a normal distribution. Do you want to try again? (y/n): \n").strip().lower()
                     if retry != 'y':
                         break
 
@@ -98,7 +98,7 @@ def sort_ranges():
             print(f"Group {i+1} ({lower_bound} - {upper_bound}): {count} values, {percentage:.2f}%")
 
     def main():
-        print("Enter your set of values (separated by new lines or spaces, end with double enter):")
+        print("\nEnter your set of values (separated by new lines or spaces, end with double enter):")
         values_input = []
         while True:
             line = input()
@@ -144,7 +144,7 @@ def sort_ranges():
 
 def generate_values():
     # Step 1: Ask for the number of values to generate
-    total_values = int(input("Enter the number of values to generate: "))
+    total_values = int(input("\nEnter the number of values to generate: "))
     
     # Step 2: Ask for the number of value types
     num_value_types = int(input("Enter the number of value types: "))
@@ -190,7 +190,7 @@ def generate_values():
 def analyze_values():
     
     # Prompt the user to enter values
-    print("Enter values (digits, symbols, letters) separated by spaces, commas, or new lines. End with a blank line.")
+    print("\nEnter values (digits, symbols, letters) separated by spaces, commas, or new lines. End with a blank line.\n")
 
     # Read input until a blank line is entered
     input_data = ""
@@ -223,7 +223,7 @@ def main():
 3. Generate custom values by their percentage
 4. Analyze custom values for their count and percentage
 0. Exit\n""")
-        choice = input("Enter your choice (1, 2, 3, 4 or 0): \n")
+        choice = input("Enter your choice (1, 2, 3, 4 or 0): \n\n")
         
         if choice == '1':
             generate_normal_distribution()
