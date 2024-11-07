@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from scipy.stats import kstest, norm
 import pyperclip
 import random
+import re
+from collections import Counter
 
 def generate_normal_distribution():
     try:
@@ -185,19 +187,50 @@ def generate_values():
     print("Results copied to clipboard:")
     print(output)
 
+def analyze_values():
+    
+    # Prompt the user to enter values
+    print("Enter values (digits, symbols, letters) separated by spaces, commas, or new lines. End with a blank line.")
+
+    # Read input until a blank line is entered
+    input_data = ""
+    while True:
+        line = input()
+        if line.strip() == "":
+            break
+        input_data += line + " "
+
+    # Split the input data into values
+    values = re.split(r'[,\s]+', input_data.strip())
+    
+    # Count the total number of values
+    num_values = len(values)
+    
+    # Count the number of each same value
+    value_counts = Counter(values)
+    
+    # Display the results
+    print(f"Total number of values: {num_values}")
+    for value, count in value_counts.items():
+        percentage = (count / num_values) * 100
+        print(f"Value: {value}, Count: {count}, Percentage: {percentage:.2f}%")
+
 def main():
     print("Choose a functionality to execute:")
     print("1. Generate normal distribution")
     print("2. Sort values into ranges and analyze them")
     print("3. Generate custom values by their percentage")
-    choice = input("Enter your choice (1, 2 or 3): ")
+    print("4. Analyze custom values for their count and percentage")
+    choice = input("Enter your choice (1, 2, 3 or 4): ")
     
     if choice == '1':
         generate_normal_distribution()
     elif choice == '2':
         sort_ranges()
     elif choice == '3':
-        generate_values()    
+        generate_values()
+    elif choice == '4':
+        analyze_values()        
     else:
         print("Invalid choice. Please enter 1 or 2.")
 
