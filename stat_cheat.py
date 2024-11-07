@@ -213,26 +213,31 @@ def analyze_values():
     print(f"Total number of values: {num_values}")
     for value, count in value_counts.items():
         percentage = (count / num_values) * 100
-        print(f"Value: {value}, Count: {count}, Percentage: {percentage:.2f}%")
+        print(f"Value: {value}, Count: {count}, Percentage: {percentage:.2f}%\n")
 
 def main():
-    print("Choose a functionality to execute:")
-    print("1. Generate normal distribution")
-    print("2. Sort values into ranges and analyze them")
-    print("3. Generate custom values by their percentage")
-    print("4. Analyze custom values for their count and percentage")
-    choice = input("Enter your choice (1, 2, 3 or 4): ")
-    
-    if choice == '1':
-        generate_normal_distribution()
-    elif choice == '2':
-        sort_ranges()
-    elif choice == '3':
-        generate_values()
-    elif choice == '4':
-        analyze_values()        
-    else:
-        print("Invalid choice. Please enter 1 or 2.")
+    while True:
+        print("""Choose a functionality to execute:
+        1. Generate normal distribution
+        2. Sort values into ranges and analyze them
+        3. Generate custom values by their percentage
+        4. Analyze custom values for their count and percentage
+        0. Exit""")
+        choice = input("Enter your choice (1, 2, 3, 4 or 0): ")
+        
+        if choice == '1':
+            generate_normal_distribution()
+        elif choice == '2':
+            sort_ranges()
+        elif choice == '3':
+            generate_values()
+        elif choice == '4':
+            analyze_values()
+        elif choice == '0':
+            print("Exiting the program. Goodbye!")
+            break             
+        else:
+            print("Invalid choice. Choose 1, 2, 3, 4 or 0")
 
 if __name__ == "__main__":
     main()
