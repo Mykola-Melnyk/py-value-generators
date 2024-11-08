@@ -5,6 +5,7 @@ from scipy.stats import kstest, norm
 import pyperclip
 import random
 import re
+import statistics
 from collections import Counter
 
 def generate_normal_distribution():
@@ -215,6 +216,48 @@ def analyze_values():
         percentage = (count / num_values) * 100
         print(f"Value: {value}, Count: {count}, Percentage: {percentage:.2f}%\n")
 
+def generate_random():
+    def generate_random_values(num_values, min_value, max_value, decimal_places):
+        values = [round(random.uniform(min_value, max_value), decimal_places) for _ in range(num_values)]
+        return values
+
+    def main():
+        # User inputs
+        num_values = int(input("Enter the number of values: "))
+        min_value = float(input("Enter the minimum value: "))
+        max_value = float(input("Enter the maximum value: "))
+        decimal_places = int(input("Enter the number of digits after comma: "))
+
+        # Generate random values
+        values = generate_random_values(num_values, min_value, max_value, decimal_places)
+
+        # Calculate statistics
+        min_val = min(values)
+        max_val = max(values)
+        mean_val = statistics.mean(values)
+        std_dev = statistics.stdev(values)
+        median_val = statistics.median(values)
+
+        # Display results
+        print("\nGenerated Values:")
+        for value in values:
+            print(f"{value:.{decimal_places}f}".replace('.', ','))
+        
+        print(f"\nNumber of values: {num_values}")
+        print(f"Minimum value: {min_val:.{decimal_places}f}".replace('.', ','))
+        print(f"Maximum value: {max_val:.{decimal_places}f}".replace('.', ','))
+        print(f"Mean value: {mean_val:.{decimal_places}f}".replace('.', ','))
+        print(f"Standard deviation: {std_dev:.{decimal_places}f}".replace('.', ','))
+        print(f"Median value: {median_val:.{decimal_places}f}".replace('.', ','))
+
+        # Copy results to clipboard
+        result_str = "\n".join([f"{value:.{decimal_places}f}".replace('.', ',') for value in values])
+        pyperclip.copy(result_str)
+        print("\nResults have been copied to the clipboard.")
+
+    if __name__ == "__main__":
+        main()
+
 def main():
     while True:
         print("""\nChoose a functionality to execute:\n
@@ -222,8 +265,9 @@ def main():
 2. Sort values into ranges and analyze them
 3. Generate custom values by their percentage
 4. Analyze custom values for their count and percentage
+5. Generate random values              
 0. Exit\n""")
-        choice = input("Enter your choice (1, 2, 3, 4 or 0): \n\n")
+        choice = input("Enter your choice (1, 2, 3, 4, 5 or 0): \n\n")
         
         if choice == '1':
             generate_normal_distribution()
@@ -233,11 +277,13 @@ def main():
             generate_values()
         elif choice == '4':
             analyze_values()
+        elif choice == '5':
+            generate_random()
         elif choice == '0':
             print("\nExiting the program. Goodbye!\n")
             break             
         else:
-            print("\nInvalid choice. Choose 1, 2, 3, 4 or 0\n")
+            print("\nInvalid choice. Choose 1, 2, 3, 4, 5 or 0\n")
 
 if __name__ == "__main__":
     main()
