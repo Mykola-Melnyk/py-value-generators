@@ -223,7 +223,7 @@ def generate_random():
 
     def main():
         # User inputs
-        num_values = int(input("Enter the number of values: "))
+        num_values = int(input("\nEnter the number of values: "))
         min_value = float(input("Enter the minimum value: "))
         max_value = float(input("Enter the maximum value: "))
         decimal_places = int(input("Enter the number of digits after comma: "))
@@ -239,7 +239,7 @@ def generate_random():
         median_val = statistics.median(values)
 
         # Display results
-        print("\nGenerated Values:")
+        print("\nGenerated Values:\n")
         for value in values:
             print(f"{value:.{decimal_places}f}".replace('.', ','))
         
@@ -248,12 +248,24 @@ def generate_random():
         print(f"Maximum value: {max_val:.{decimal_places}f}".replace('.', ','))
         print(f"Mean value: {mean_val:.{decimal_places}f}".replace('.', ','))
         print(f"Standard deviation: {std_dev:.{decimal_places}f}".replace('.', ','))
-        print(f"Median value: {median_val:.{decimal_places}f}".replace('.', ','))
+        print(f"Median value: {median_val:.{decimal_places}f}\n".replace('.', ','))
 
         # Copy results to clipboard
         result_str = "\n".join([f"{value:.{decimal_places}f}".replace('.', ',') for value in values])
         pyperclip.copy(result_str)
-        print("\nResults have been copied to the clipboard.")
+        print("\nResults have been copied to the clipboard.\n")
+
+        # Ask the user if they want to create a histogram
+        create_histogram = input("\nWould you like to create a histogram (y/n): \n").strip().lower()
+    
+        if create_histogram == "y":
+            # Plot histogram
+            plt.hist(values, bins=10, edgecolor='black')
+            plt.xlabel('Value')
+            plt.ylabel('Frequency')
+            plt.title('Histogram of Generated Values')
+            plt.grid(True)
+            plt.show()
 
     if __name__ == "__main__":
         main()
