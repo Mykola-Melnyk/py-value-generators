@@ -16,6 +16,7 @@ def generate_normal_distribution():
             mean = float(input("Enter mean: "))
             std_dev = float(input("Enter standard deviation: "))
             num_values = int(input("Enter number of values: "))
+            dec_sep = input("Select decimal separator (./,): ")
             digits_after_comma = int(input("Enter number of digits after comma: "))
             create_hist = input("Create histogram (y/n): ").strip().lower() == 'y'
 
@@ -27,7 +28,7 @@ def generate_normal_distribution():
                 extra_values = extra_values[(extra_values >= lower) & (extra_values <= upper)]
                 values = np.concatenate([values, extra_values])
 
-            return values[:num_values], digits_after_comma, create_hist
+            return values[:num_values], digits_after_comma, create_hist, dec_sep
 
         def check_normality(values):
             k_stat, p_value = kstest(values, 'norm', args=(np.mean(values), np.std(values)))
@@ -35,13 +36,25 @@ def generate_normal_distribution():
 
         def main():
             while True:
-                values, digits_after_comma, create_hist = generate_values()
+                values, digits_after_comma, create_hist, dec_sep = generate_values()
 
                 if check_normality(values):
                     formatted_values = [f"{value:.{digits_after_comma}f}".replace('.', ',') for value in values]
                     result = "\n".join(formatted_values)
-                    pyperclip.copy(result)
-                    print(result)
+                    dot_formatted_values = [f"{value:.{digits_after_comma}f}" for value in values]
+                    dot_result = "\n".join(dot_formatted_values)
+
+                    if dec_sep == '.':
+                        pyperclip.copy(dot_result)
+                        print(dot_result)
+                    elif dec_sep == ',':
+                        pyperclip.copy(result)
+                        print(result)
+                    else:
+                        print("\nInvalid choice. Using '.' as separator. \n")
+                        pyperclip.copy(dot_result)
+                        print(dot_result)
+
                     print("\nThe generated values follow a normal distribution. They have been copied to the clipboard.\n")
                     print(f"Total number of values: {len(values)}")
                     print(f"Minimum value: {min(values):.2f}")
@@ -227,6 +240,8 @@ def generate_random():
         min_value = float(input("Enter the minimum value: "))
         max_value = float(input("Enter the maximum value: "))
         decimal_places = int(input("Enter the number of digits after comma: "))
+        create_histogram = input("Would you like to create a histogram? (y/n): ").strip().lower()
+        dec_sep = input("Select decimal separator (./,): ")
 
         # Generate random values
         values = generate_random_values(num_values, min_value, max_value, decimal_places)
@@ -239,25 +254,56 @@ def generate_random():
         median_val = statistics.median(values)
 
         # Display results
-        print("\nGenerated Values:\n")
-        for value in values:
-            print(f"{value:.{decimal_places}f}".replace('.', ','))
-        
-        print(f"\nNumber of values: {num_values}")
-        print(f"Minimum value: {min_val:.{decimal_places}f}".replace('.', ','))
-        print(f"Maximum value: {max_val:.{decimal_places}f}".replace('.', ','))
-        print(f"Mean value: {mean_val:.{decimal_places}f}".replace('.', ','))
-        print(f"Standard deviation: {std_dev:.{decimal_places}f}".replace('.', ','))
-        print(f"Median value: {median_val:.{decimal_places}f}\n".replace('.', ','))
+        if dec_sep == '.':
+            print("\nGenerated Values:\n")
+            for value in values:
+                print(f"{value:.{decimal_places}f}")
+            
+            print(f"\nNumber of values: {num_values}")
+            print(f"Minimum value: {min_val:.{decimal_places}f}")
+            print(f"Maximum value: {max_val:.{decimal_places}f}")
+            print(f"Mean value: {mean_val:.{decimal_places}f}")
+            print(f"Standard deviation: {std_dev:.{decimal_places}f}")
+            print(f"Median value: {median_val:.{decimal_places}f}\n")
 
-        # Copy results to clipboard
-        result_str = "\n".join([f"{value:.{decimal_places}f}".replace('.', ',') for value in values])
-        pyperclip.copy(result_str)
-        print("\nResults have been copied to the clipboard.\n")
+            # Copy results to clipboard
+            result_str = "\n".join([f"{value:.{decimal_places}f}" for value in values])
+            pyperclip.copy(result_str)
+            print("Results have been copied to the clipboard.\n")
+        elif dec_sep == ',':
+            print("\nGenerated Values:\n")
+            for value in values:
+                print(f"{value:.{decimal_places}f}".replace('.', ','))
+            
+            print(f"\nNumber of values: {num_values}")
+            print(f"Minimum value: {min_val:.{decimal_places}f}".replace('.', ','))
+            print(f"Maximum value: {max_val:.{decimal_places}f}".replace('.', ','))
+            print(f"Mean value: {mean_val:.{decimal_places}f}".replace('.', ','))
+            print(f"Standard deviation: {std_dev:.{decimal_places}f}".replace('.', ','))
+            print(f"Median value: {median_val:.{decimal_places}f}\n".replace('.', ','))
 
-        # Ask the user if they want to create a histogram
-        create_histogram = input("\nWould you like to create a histogram (y/n): \n").strip().lower()
-    
+            # Copy results to clipboard
+            result_str = "\n".join([f"{value:.{decimal_places}f}".replace('.', ',') for value in values])
+            pyperclip.copy(result_str)
+            print("Results have been copied to the clipboard.\n")
+        else:
+            print("\nInvalid choice. Using '.' as separator. \n")
+            print("Generated Values:\n")
+            for value in values:
+                print(f"{value:.{decimal_places}f}")
+            
+            print(f"\nNumber of values: {num_values}")
+            print(f"Minimum value: {min_val:.{decimal_places}f}")
+            print(f"Maximum value: {max_val:.{decimal_places}f}")
+            print(f"Mean value: {mean_val:.{decimal_places}f}")
+            print(f"Standard deviation: {std_dev:.{decimal_places}f}")
+            print(f"Median value: {median_val:.{decimal_places}f}\n")
+
+            # Copy results to clipboard
+            result_str = "\n".join([f"{value:.{decimal_places}f}" for value in values])
+            pyperclip.copy(result_str)
+            print("Results have been copied to the clipboard.\n")
+
         if create_histogram == "y":
             # Plot histogram
             plt.hist(values, bins=10, edgecolor='black')
