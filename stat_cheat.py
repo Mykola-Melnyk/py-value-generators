@@ -338,6 +338,15 @@ def generate_ranges():
         random.shuffle(values)
         return values, range_info
 
+    def calculate_actual_percentages(values, ranges):
+        range_counts = [0] * len(ranges)
+        for value in values:
+            for i, (lower, upper, _) in enumerate(ranges):
+                if lower <= value <= upper:
+                    range_counts[i] += 1
+                    break
+        return [(count / len(values)) * 100 for count in range_counts]
+
     def main():
         # User inputs
         num_values = int(input("Enter the total number of values: "))
@@ -360,6 +369,9 @@ def generate_ranges():
         # Generate random values
         values, range_info = generate_random_values(num_values, ranges, decimal_places)
 
+        # Calculate actual percentages
+        actual_percentages = calculate_actual_percentages(values, ranges)
+
         # Display results
         print("\nGenerated Values:")
         formatted_values = [f"{value:.{decimal_places}f}".replace('.', ',' if decimal_separator == ',' else '.') for value in values]
@@ -373,8 +385,9 @@ def generate_ranges():
 
         # Show summary info
         print(f"\nTotal number of generated values: {num_values}")
-        for lower, upper, percentage, range_values in range_info:
-            print(f"\nRange [{lower}, {upper}] ({percentage}%):")
+        for i, (lower, upper, percentage, range_values) in enumerate(range_info):
+            actual_percentage = actual_percentages[i]
+            print(f"\nRange [{lower}, {upper}] (Expected: {percentage}%, Actual: {actual_percentage:.2f}%):")
             print(f"  Number of values: {len(range_values)}")
             print(f"  Minimum value: {min(range_values):.{decimal_places}f}".replace('.', ',' if decimal_separator == ',' else '.'))
             print(f"  Maximum value: {max(range_values):.{decimal_places}f}".replace('.', ',' if decimal_separator == ',' else '.'))
