@@ -316,6 +316,81 @@ def generate_random():
     if __name__ == "__main__":
         main()
 
+def generate_ranges():
+    def generate_random_values(num_values, ranges, decimal_places):
+        values = []
+        range_info = []
+
+        for lower, upper, percentage in ranges:
+            range_count = round(num_values * percentage / 100)
+            range_values = [
+                round(random.uniform(lower, upper), decimal_places)
+                for _ in range(range_count)
+            ]
+            values.extend(range_values)
+            range_info.append((lower, upper, percentage, range_values))
+
+        # Adjust the number of values to match exactly num_values
+        while len(values) < num_values:
+            values.append(round(random.uniform(ranges[0][0], ranges[-1][1]), decimal_places))
+        values = values[:num_values]  # Truncate the list if it exceeds num_values
+        random.shuffle(values)
+        return values, range_info
+
+    def main():
+        # User inputs
+        num_values = int(input("Enter the total number of values: "))
+        num_ranges = int(input("Enter the number of value ranges: "))
+
+        ranges = []
+        for i in range(num_ranges):
+            lower = float(input(f"Enter the lower bound for range {i+1}: "))
+            upper = float(input(f"Enter the upper bound for range {i+1}: "))
+            percentage = float(input(f"Enter the percentage for range {i+1}: "))
+            ranges.append((lower, upper, percentage))
+
+        decimal_separator = input("Enter the decimal separator you want to use ('.' or ','): ").strip().lower()
+        if decimal_separator not in ['.', ',']:
+            decimal_separator = '.'
+
+        decimal_places = int(input("Enter the number of digits after the comma: "))
+        show_histogram = input("Do you want to show a histogram of the results (y/n)? ").strip().lower() == 'y'
+
+        # Generate random values
+        values, range_info = generate_random_values(num_values, ranges, decimal_places)
+
+        # Display results
+        print("\nGenerated Values:")
+        formatted_values = [f"{value:.{decimal_places}f}".replace('.', ',' if decimal_separator == ',' else '.') for value in values]
+        for value in formatted_values:
+            print(value)
+
+        # Copy results to clipboard
+        result_str = "\n".join(formatted_values)
+        pyperclip.copy(result_str)
+        print("\nResults have been copied to the clipboard.")
+
+        # Show summary info
+        print(f"\nTotal number of generated values: {num_values}")
+        for lower, upper, percentage, range_values in range_info:
+            print(f"\nRange [{lower}, {upper}] ({percentage}%):")
+            print(f"  Number of values: {len(range_values)}")
+            print(f"  Minimum value: {min(range_values):.{decimal_places}f}".replace('.', ',' if decimal_separator == ',' else '.'))
+            print(f"  Maximum value: {max(range_values):.{decimal_places}f}".replace('.', ',' if decimal_separator == ',' else '.'))
+            print(f"  Mean value: {sum(range_values)/len(range_values):.{decimal_places}f}".replace('.', ',' if decimal_separator == ',' else '.'))
+
+        # Show histogram if required
+        if show_histogram:
+            plt.hist(values, bins=10, edgecolor='black')
+            plt.xlabel('Value')
+            plt.ylabel('Frequency')
+            plt.title('Histogram of Generated Values')
+            plt.grid(True)
+            plt.show()
+
+    if __name__ == "__main__":
+        main()
+
 def main():
     while True:
         print("""\nChoose a functionality to execute:\n
@@ -323,9 +398,10 @@ def main():
 2. Sort values into ranges and analyze them
 3. Generate custom values by their percentage
 4. Analyze custom values for their count and percentage
-5. Generate random values              
+5. Generate random values
+6. Generate random values in ranges with specific boundaries and percentages                             
 0. Exit\n""")
-        choice = input("Enter your choice (1, 2, 3, 4, 5 or 0): \n\n")
+        choice = input("Enter your choice (1, 2, 3, 4, 5, 6 or 0): \n\n")
         
         if choice == '1':
             generate_normal_distribution()
@@ -337,11 +413,13 @@ def main():
             analyze_values()
         elif choice == '5':
             generate_random()
+        elif choice == '6':
+            generate_ranges()
         elif choice == '0':
             print("\nExiting the program. Goodbye!\n")
             break             
         else:
-            print("\nInvalid choice. Choose 1, 2, 3, 4, 5 or 0\n")
+            print("\nInvalid choice. Choose 1, 2, 3, 4, 5, 6 or 0\n")
 
 if __name__ == "__main__":
     main()
