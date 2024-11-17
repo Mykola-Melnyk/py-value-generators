@@ -97,7 +97,7 @@ def sort_ranges():
 
         for value in values:
             for i, (lower_bound, upper_bound) in enumerate(group_ranges):
-                if lower_bound <= value < upper_bound:
+                if lower_bound <= value <= upper_bound:
                     group_counts[i] += 1
                     break
 
@@ -127,14 +127,15 @@ def sort_ranges():
         group_ranges = []
 
         for i in range(num_groups):
-            lower_bound = float(input(f"Enter the lower bound for group {i+1}: "))
-            upper_bound = float(input(f"Enter the upper bound for group {i+1}: "))
+            lower_bound = float(input(f"Enter the lower bound (inclusive) for group {i+1}: "))
+            upper_bound = float(input(f"Enter the upper bound (inclusive) for group {i+1}: "))
             group_ranges.append((lower_bound, upper_bound))
+
+        show_histogram = input("Do you want a histogram (y/n)? ").strip().lower()
 
         group_counts, total_values = sort_values_into_groups(values, num_groups, group_ranges)
         generate_statistics(group_counts, group_ranges, total_values)
 
-        show_histogram = input("Do you want a histogram (y/n)? ").strip().lower()
         if show_histogram == 'y':
             plt.figure(figsize=(12, 6))
 
@@ -344,8 +345,8 @@ def generate_ranges():
 
         ranges = []
         for i in range(num_ranges):
-            lower = float(input(f"Enter the lower bound for range {i+1}: "))
-            upper = float(input(f"Enter the upper bound for range {i+1}: "))
+            lower = float(input(f"Enter the lower bound (inclusive) for range {i+1}: "))
+            upper = float(input(f"Enter the upper bound (inclusive) for range {i+1}: "))
             percentage = float(input(f"Enter the percentage for range {i+1}: "))
             ranges.append((lower, upper, percentage))
 
