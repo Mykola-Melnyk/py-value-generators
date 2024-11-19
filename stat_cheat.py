@@ -170,14 +170,15 @@ def generate_values():
     # Step 3: Ask for the definition of each value type and their percentages
     for i in range(num_value_types):
         value_type = input(f"Enter the definition for value type {i+1}: ")
-        percentage = float(input(f"Enter the percentage for value type {i+1} (0-100): "))
         value_types.append(value_type)
-        percentages.append(percentage / 100)
-    
-    # Ensure the total percentage is 100
-    if sum(percentages) != 1.0:
-        print("Error: The total percentage must equal 100.")
-        return
+        if i < num_value_types - 1:
+            percentage = float(input(f"Enter the percentage for value type {i+1} (0-100): "))
+            percentages.append(percentage / 100)
+        else:
+            # Automatically calculate the percentage for the last value type
+            remaining_percentage = 1 - sum(percentages)
+            percentages.append(remaining_percentage)
+            print(f"The automatically calculated percentage for value type {i+1} is: {remaining_percentage * 100:.2f}%")
     
     # Generate the values
     generated_values = []
