@@ -201,6 +201,15 @@ def generate_values():
     
     print("Results copied to clipboard:")
     print(output)
+    
+    # Display summary
+    print("\nSummary:")
+    actual_counts = {value_type: generated_values.count(value_type) for value_type in value_types}
+    for value_type, count in actual_counts.items():
+        actual_percentage = (count / total_values) * 100
+        print(f"{value_type}: {count} values, {actual_percentage:.2f}%")
+
+    print(f"\nTotal number of generated values: {total_values}")
 
 def analyze_values():
     
