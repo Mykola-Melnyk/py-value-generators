@@ -415,6 +415,163 @@ def generate_ranges():
     if __name__ == "__main__":
         main()
 
+def continue_number_set():
+    def get_user_input():
+        values = []
+        print("Enter values separated by spaces or new lines, and end with double new line:")
+        while True:
+            line = input()
+            if line == "":
+                break
+            values.extend(map(float, line.split()))
+        return values
+
+    def get_required_count():
+        total_values_needed = int(input("Enter the total number of values needed: "))
+        return total_values_needed
+
+    def analyze_distribution(values):
+        k2, p = stats.normaltest(values)
+        return p > 0.05  # If p > 0.05, we assume normal distribution
+
+    def calculate_decimal_places(values):
+        return max(len(str(value).split(".")[1]) if "." in str(value) else 0 for value in values)
+
+    def generate_normal_values(mean, std, min_val, max_val, count, decimal_places):
+        values = np.random.normal(mean, std, count)
+        values = np.clip(values, min_val, max_val)
+        return np.round(values, decimal_places)
+
+    def generate_random_values(mean, median, min_val, max_val, count, decimal_places):
+        values = np.random.uniform(min_val, max_val, count)
+        adjusted_values = (values - np.mean(values)) + mean  # Adjust mean
+        adjusted_values = np.clip(adjusted_values, min_val, max_val)
+        return np.round(adjusted_values, decimal_places)
+
+    def copy_to_clipboard(data):
+        pyperclip.copy("\n".join(map(str, data)))
+        print("New values copied to clipboard.")
+
+    def main():
+        # Step 1: Get user input
+        values = get_user_input()
+        print(f"Initial values: {values}")
+
+        # Step 2: Get required count
+        total_values_needed = get_required_count()
+        num_new_values = total_values_needed - len(values)
+        print(f"Total number of values needed: {total_values_needed}")
+        print(f"Number of new values to generate: {num_new_values}")
+
+        # Step 3: Analyze distribution
+        is_normal = analyze_distribution(values)
+        print(f"Values follow normal distribution: {is_normal}")
+
+        # Step 4: Calculate decimal places
+        decimal_places = calculate_decimal_places(values)
+        print(f"Number of decimal places to retain: {decimal_places}")
+
+        min_val, max_val = np.min(values), np.max(values)
+
+        if is_normal:
+            # Step 5: Generate new normal values
+            mean, std = np.mean(values), np.std(values)
+            print(f"Minimum: {min_val}, Maximum: {max_val}, Mean: {mean}, Standard Deviation: {std}")
+            new_values = generate_normal_values(mean, std, min_val, max_val, num_new_values, decimal_places)
+        else:
+            # Step 6: Generate new random values
+            mean, median = np.mean(values), np.median(values)
+            print(f"Minimum: {min_val}, Maximum: {max_val}, Mean: {mean}, Median: {median}")
+            new_values = generate_random_values(mean, median, min_val, max_val, num_new_values, decimal_places)
+        
+        # Step 7: Output the new values
+        print("New values:")
+        for value in new_values:
+            print(value)
+        
+        # Step 8: Copy new values to clipboard
+        copy_to_clipboard(new_values)
+
+    if __name__ == "__main__":
+        main()
+
+def continue_char_set():
+    def get_user_input():
+        values = []
+        print("Enter values separated by spaces or new lines, and end with double new line:")
+        while True:
+            line = input()
+            if line == "":
+                break
+            values.extend(line.split())
+        return values
+
+    def get_required_count():
+        total_values_needed = int(input("Enter the total number of values needed: "))
+        return total_values_needed
+
+    def analyze_values(values):
+        count = Counter(values)
+        total_values = len(values)
+        analysis = {value: (freq, (freq / total_values)) for value, freq in count.items()}
+        return analysis
+
+    def create_new_values(analysis, num_new_values):
+        new_values = []
+        remaining_values = num_new_values
+
+        for value, (freq, proportion) in analysis.items():
+            num_to_generate = int(proportion * num_new_values)
+            new_values.extend([value] * num_to_generate)
+            remaining_values -= num_to_generate
+
+        # Adjust to ensure the exact number of values
+        while remaining_values > 0:
+            for value in analysis.keys():
+                if remaining_values > 0:
+                    new_values.append(value)
+                    remaining_values -= 1
+                else:
+                    break
+
+        random.shuffle(new_values)
+        return new_values
+
+    def copy_to_clipboard(data):
+        pyperclip.copy("\n".join(map(str, data)))
+        print("New values copied to clipboard.")
+
+    def main():
+        # Step 1: Get user input
+        values = get_user_input()
+        print(f"Initial values: {values}")
+
+        # Step 2: Get required count
+        total_values_needed = get_required_count()
+        num_new_values = total_values_needed - len(values)
+        print(f"Total number of values needed: {total_values_needed}")
+        print(f"Number of new values to generate: {num_new_values}")
+
+        # Step 3: Analyze values
+        analysis = analyze_values(values)
+        print("Value analysis (value: (frequency, percent)):")
+        for value, (freq, percent) in analysis.items():
+            print(f"{value}: ({freq}, {percent*100:.2f}%)")
+
+        # Step 4: Create new values
+        new_values = create_new_values(analysis, num_new_values)
+
+        # Step 5: Output the new values
+        print("New values:")
+        for value in new_values:
+            print(value)
+
+        # Step 6: Copy new values to clipboard
+        copy_to_clipboard(new_values)
+
+    if __name__ == "__main__":
+        main()
+
 def main():
     while True:
         print("""\nChoose a functionality to execute:\n
@@ -423,9 +580,11 @@ def main():
 3. Generate custom values by their percentage
 4. Analyze custom values for their count and percentage
 5. Generate random values
-6. Generate random values in ranges with specific boundaries and percentages                             
+6. Generate random values in ranges with specific boundaries and percentages
+7. Continue a given set of numerical values
+8. Continue a given set of character values
 0. Exit\n""")
-        choice = input("Enter your choice (1, 2, 3, 4, 5, 6 or 0): \n\n")
+        choice = input("Enter your choice (1, 2, 3, 4, 5, 6, 7, 8 or 0): \n\n")
         
         if choice == '1':
             generate_normal_distribution()
@@ -439,11 +598,15 @@ def main():
             generate_random()
         elif choice == '6':
             generate_ranges()
+        elif choice == '7':
+            continue_number_set()
+        elif choice == '8':
+            continue_char_set()
         elif choice == '0':
             print("\nExiting the program. Goodbye!\n")
             break             
         else:
-            print("\nInvalid choice. Choose 1, 2, 3, 4, 5, 6 or 0\n")
+            print("\nInvalid choice. Choose 1, 2, 3, 4, 5, 6, 7, 8 or 0\n")
 
 if __name__ == "__main__":
     main()
