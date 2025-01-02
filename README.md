@@ -7,6 +7,7 @@ Stats cheating program. It has a following functionality:
 6. Generate random values in ranges with specific boundaries and percentages
 7. Continue a given set of numerical values by adding new values based on the original set of values
 8. Continue a given set of character values by adding new values based on the original set of values
+9. Analyze a given set of values for normality and descriptive statistics
 
 You need to have Python 3 intalled, and then use pip to install all the dependencies by running the following command in terminal in the project folder:
 

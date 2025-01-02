@@ -573,6 +573,52 @@ def continue_char_set():
     if __name__ == "__main__":
         main()
 
+def analyze_data_set():
+    def main():
+        print("Enter values separated by spaces or new lines, and end with a double new line (press Enter twice):")
+        user_input = []
+        while True:
+            line = input().strip()
+            if line == "":
+                break
+            user_input.extend(line.split())
+        
+        values = np.array(user_input, dtype=float)
+        num_values = len(values)
+        
+        # Descriptive statistics
+        mean = np.mean(values)
+        std_dev = np.std(values)
+        minimum = np.min(values)
+        maximum = np.max(values)
+        median = np.median(values)
+        
+        print(f"\nNumber of values: {num_values}")
+        
+        # Test for normality using the Shapiro-Wilk test
+        shapiro_test = stats.shapiro(values)
+        print("\nShapiro-Wilk Test:")
+        print(f"Test Statistic: {shapiro_test.statistic}")
+        print(f"P-value: {shapiro_test.pvalue}")
+        
+        if shapiro_test.pvalue > 0.05:
+            print("\nThe data follows a normal distribution (fail to reject the null hypothesis).")
+            print("\nStatistics for Normally Distributed Data:")
+            print(f"Mean: {mean}")
+            print(f"Standard Deviation: {std_dev}")
+            print(f"Minimum Value: {minimum}")
+            print(f"Maximum Value: {maximum}")
+        else:
+            print("\nThe data does not follow a normal distribution (reject the null hypothesis).")
+            print("\nStatistics for Non-Normally Distributed Data:")
+            print(f"Mean: {mean}")
+            print(f"Median: {median}")
+            print(f"Minimum Value: {minimum}")
+            print(f"Maximum Value: {maximum}")
+
+    if __name__ == "__main__":
+        main()
+
 def main():
     while True:
         print("""\nChoose a functionality to execute:\n
@@ -584,8 +630,9 @@ def main():
 6. Generate random values in ranges with specific boundaries and percentages
 7. Continue a given set of numerical values
 8. Continue a given set of character values
+9. Analyze a given set of values for normality and descriptive statistics
 0. Exit\n""")
-        choice = input("Enter your choice (1, 2, 3, 4, 5, 6, 7, 8 or 0): \n\n")
+        choice = input("Enter your choice (1, 2, 3, 4, 5, 6, 7, 8, 9 or 0): \n\n")
         
         if choice == '1':
             generate_normal_distribution()
@@ -603,11 +650,13 @@ def main():
             continue_number_set()
         elif choice == '8':
             continue_char_set()
+        elif choice == '9':
+            analyze_data_set()
         elif choice == '0':
             print("\nExiting the program. Goodbye!\n")
             break             
         else:
-            print("\nInvalid choice. Choose 1, 2, 3, 4, 5, 6, 7, 8 or 0\n")
+            print("\nInvalid choice. Choose 1, 2, 3, 4, 5, 6, 7, 8, 9 or 0\n")
 
 if __name__ == "__main__":
     main()
